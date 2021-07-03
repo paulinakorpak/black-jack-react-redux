@@ -1,8 +1,9 @@
+import React from 'react';
+import Wrapper from './styles';
+
 function App() {
   return (
-    <div className="App">
-      Black Jack React Redux App
-    </div>
+    <Wrapper className="d-flex vh-100 w-100" />
   );
 }
 
