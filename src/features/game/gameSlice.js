@@ -17,4 +17,6 @@ export const gameSlice = createSlice({
 
 export const { startGame } = gameSlice.actions;
 
+export const selectPage = (state) => state.game.page;
+
 export default gameSlice.reducer;
