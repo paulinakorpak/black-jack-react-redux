@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { PAGE_GAME, PAGE_WELCOME } from './pages';
-import { PHASE_BET, PHASE_USER_TURN } from './phases';
+import { PHASE_BET, PHASE_DEALER_TURN, PHASE_USER_TURN } from './phases';
 import { PLAYER_USER, PLAYER_DEALER } from './players';
 import allCards from './cards';
 import { ACE_HIGH_VALUE, ACE_LOW_VALUE, BLACK_JACK_VALUE } from './values';
@@ -41,18 +41,20 @@ export const gameSlice = createSlice({
         state.dealerCards = [...state.dealerCards, card];
       }
     },
+    stand: (state) => {
+      state.phase = PHASE_DEALER_TURN;
+    },
   },
 });
 
 export const {
-  startGame, raiseStake, deal, drawCard,
+  startGame, raiseStake, deal, drawCard, stand,
 } = gameSlice.actions;
 
 const countPoints = (cards) => {
   let points = cards.reduce((sum, add) => sum + add.value, 0);
   const hasAce = cards.some((card) => card.value === ACE_LOW_VALUE);
 
-  const hasAce = cards.includes((card) => card.value === ACE_LOW_VALUE);
   if (hasAce) {
     const aceValuesDiff = ACE_HIGH_VALUE - ACE_LOW_VALUE;
     const aceThreshold = BLACK_JACK_VALUE - aceValuesDiff;

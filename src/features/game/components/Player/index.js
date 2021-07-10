@@ -7,9 +7,10 @@ import {
 import {
   drawCard, selectDealerCards, selectDealerPoints, selectPhase, selectUserCards, selectUserPoints,
 } from '../../gameSlice';
-import { PHASE_USER_TURN } from '../../phases';
+import { PHASE_DEALER_TURN, PHASE_USER_TURN } from '../../phases';
 import { PLAYER_DEALER, PLAYER_USER } from '../../players';
 import Card from '../Card';
+import { DEALER_HIT_LIMIT } from '../../values';
 
 function Player({ player }) {
   const dispatch = useDispatch();
@@ -38,7 +39,21 @@ function Player({ player }) {
         dispatch(drawCard(PLAYER_DEALER));
       }
     }
+
+    if (phase === PHASE_DEALER_TURN && player === PLAYER_DEALER) {
+      if (points <= DEALER_HIT_LIMIT) {
+        dispatch(drawCard(PLAYER_DEALER));
+      }
+    }
   }, [phase]);
+
+  useEffect(() => {
+    if (phase === PHASE_DEALER_TURN && player === PLAYER_DEALER) {
+      if (points <= DEALER_HIT_LIMIT) {
+        dispatch(drawCard(PLAYER_DEALER));
+      }
+    }
+  }, [points]);
 
   return (
     <PlayerElement className={`${player} d-flex justify-content-center align-items-center position-fixed`}>
