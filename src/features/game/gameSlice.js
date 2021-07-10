@@ -6,11 +6,14 @@ import {
 import { PLAYER_USER, PLAYER_DEALER } from './players';
 import allCards from './cards';
 import { ACE_HIGH_VALUE, ACE_LOW_VALUE, BLACK_JACK_VALUE } from './values';
+import { RESULT_PUSH, RESULT_USER_WIN } from './results';
+
+const initialAccount = 1000;
 
 const initialState = {
   page: PAGE_WELCOME,
   phase: PHASE_BET,
-  account: 1000,
+  account: initialAccount,
   stake: 0,
   cards: allCards,
   userCards: [],
@@ -51,11 +54,28 @@ export const gameSlice = createSlice({
       state.result = action.payload;
       state.phase = PHASE_RESULTS;
     },
+    nextRound: (state) => {
+      if (state.result === RESULT_USER_WIN) {
+        state.account += state.stake * 2;
+      } else if (state.result === RESULT_PUSH) {
+        state.account += state.stake;
+      }
+
+      state.phase = PHASE_BET;
+      state.stake = 0;
+      state.userCards = [];
+      state.dealerCards = [];
+      state.result = null;
+    },
+    endGame: (state) => {
+      state.page = PAGE_WELCOME;
+      state.account = initialAccount;
+    },
   },
 });
 
 export const {
-  startGame, raiseStake, deal, drawCard, stand, setResult,
+  startGame, raiseStake, deal, drawCard, stand, setResult, nextRound, endGame,
 } = gameSlice.actions;
 
 const countPoints = (cards) => {

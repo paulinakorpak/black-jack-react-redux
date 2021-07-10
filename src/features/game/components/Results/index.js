@@ -5,6 +5,7 @@ import { Wrapper, Message } from './styles';
 import {
   RESULT_DEALER_WIN, RESULT_GAME_OVER, RESULT_PUSH, RESULT_USER_WIN,
 } from '../../results';
+import { endGame, nextRound } from '../../gameSlice';
 
 const resultTypes = {
   [RESULT_USER_WIN]: {
@@ -22,6 +23,16 @@ const resultTypes = {
 };
 
 function Results({ type }) {
+  const dispatch = useDispatch();
+
+  setTimeout(() => {
+    dispatch(nextRound());
+
+    if (type === RESULT_GAME_OVER) {
+      dispatch(endGame());
+    }
+  }, 2000);
+
   return (
     <Wrapper className="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
       <Message
