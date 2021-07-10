@@ -16,44 +16,50 @@ function Player({ player }) {
   const dispatch = useDispatch();
   const phase = useSelector(selectPhase);
 
-  let cards = [];
-  let points = 0;
+  const userCards = useSelector(selectUserCards);
+  const userPoints = useSelector(selectUserPoints);
+  const dealerCards = useSelector(selectDealerCards);
+  const dealerPoints = useSelector(selectDealerPoints);
 
-  if (player === PLAYER_USER) {
-    cards = useSelector(selectUserCards);
-    points = useSelector(selectUserPoints);
-  }
-  if (player === PLAYER_DEALER) {
-    cards = useSelector(selectDealerCards);
-    points = useSelector(selectDealerPoints);
-  }
+  const drawUserCard = () => {
+    if (player === PLAYER_USER) {
+      dispatch(drawCard(PLAYER_USER));
+      dispatch(drawCard(PLAYER_USER));
+    }
+
+    if (player === PLAYER_DEALER) {
+      dispatch(drawCard(PLAYER_DEALER));
+    }
+  };
+
+  const drawDealerCard = () => {
+    if (dealerPoints <= DEALER_HIT_LIMIT && dealerPoints <= userPoints) {
+      dispatch(drawCard(PLAYER_DEALER));
+    }
+  };
 
   useEffect(() => {
     if (phase === PHASE_USER_TURN) {
-      if (player === PLAYER_USER) {
-        dispatch(drawCard(PLAYER_USER));
-        dispatch(drawCard(PLAYER_USER));
-      }
-
-      if (player === PLAYER_DEALER) {
-        dispatch(drawCard(PLAYER_DEALER));
-      }
+      drawUserCard();
     }
 
     if (phase === PHASE_DEALER_TURN && player === PLAYER_DEALER) {
-      if (points <= DEALER_HIT_LIMIT) {
-        dispatch(drawCard(PLAYER_DEALER));
-      }
+      setTimeout(() => {
+        drawDealerCard();
+      }, 500);
     }
   }, [phase]);
 
   useEffect(() => {
     if (phase === PHASE_DEALER_TURN && player === PLAYER_DEALER) {
-      if (points <= DEALER_HIT_LIMIT) {
-        dispatch(drawCard(PLAYER_DEALER));
-      }
+      setTimeout(() => {
+        drawDealerCard();
+      }, 500);
     }
-  }, [points]);
+  }, [dealerPoints]);
+
+  const cards = player === PLAYER_USER ? userCards : dealerCards;
+  const points = player === PLAYER_USER ? userPoints : dealerPoints;
 
   return (
     <PlayerElement className={`${player} d-flex justify-content-center align-items-center position-fixed`}>

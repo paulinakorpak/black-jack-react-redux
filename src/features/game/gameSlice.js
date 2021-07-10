@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { PAGE_GAME, PAGE_WELCOME } from './pages';
-import { PHASE_BET, PHASE_DEALER_TURN, PHASE_USER_TURN } from './phases';
+import {
+  PHASE_BET, PHASE_DEALER_TURN, PHASE_RESULTS, PHASE_USER_TURN,
+} from './phases';
 import { PLAYER_USER, PLAYER_DEALER } from './players';
 import allCards from './cards';
 import { ACE_HIGH_VALUE, ACE_LOW_VALUE, BLACK_JACK_VALUE } from './values';
@@ -13,6 +15,7 @@ const initialState = {
   cards: allCards,
   userCards: [],
   dealerCards: [],
+  result: null,
 };
 
 export const gameSlice = createSlice({
@@ -44,11 +47,15 @@ export const gameSlice = createSlice({
     stand: (state) => {
       state.phase = PHASE_DEALER_TURN;
     },
+    setResult: (state, action) => {
+      state.result = action.payload;
+      state.phase = PHASE_RESULTS;
+    },
   },
 });
 
 export const {
-  startGame, raiseStake, deal, drawCard, stand,
+  startGame, raiseStake, deal, drawCard, stand, setResult,
 } = gameSlice.actions;
 
 const countPoints = (cards) => {
@@ -75,5 +82,6 @@ export const selectUserCards = (state) => state.game.userCards;
 export const selectDealerCards = (state) => state.game.dealerCards;
 export const selectUserPoints = (state) => countPoints(state.game.userCards);
 export const selectDealerPoints = (state) => countPoints(state.game.dealerCards);
+export const selectResult = (state) => state.game.result;
 
 export default gameSlice.reducer;
