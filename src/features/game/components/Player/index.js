@@ -5,22 +5,27 @@ import {
   PlayerElement, Cards, Info, Name, Points,
 } from './styles';
 import {
-  drawCard, selectDealerCards, selectPhase, selectUserCards,
+  drawCard, selectDealerCards, selectDealerPoints, selectPhase, selectUserCards, selectUserPoints,
 } from '../../gameSlice';
 import { PHASE_USER_TURN } from '../../phases';
 import { PLAYER_DEALER, PLAYER_USER } from '../../players';
 import Card from '../Card';
 
-const cardsSelectors = {
-  [PLAYER_USER]: selectUserCards,
-  [PLAYER_DEALER]: selectDealerCards,
-};
-
 function Player({ player }) {
   const dispatch = useDispatch();
   const phase = useSelector(selectPhase);
 
-  const cards = useSelector(cardsSelectors[player]);
+  let cards = [];
+  let points = 0;
+
+  if (player === PLAYER_USER) {
+    cards = useSelector(selectUserCards);
+    points = useSelector(selectUserPoints);
+  }
+  if (player === PLAYER_DEALER) {
+    cards = useSelector(selectDealerCards);
+    points = useSelector(selectDealerPoints);
+  }
 
   useEffect(() => {
     if (phase === PHASE_USER_TURN) {
@@ -43,7 +48,7 @@ function Player({ player }) {
       <Info className="d-flex align-items-center justify-content-around m-2 position-fixed">
         <Name className="m-4 text-uppercase font-weight-bold text-secondary">{player}</Name>
         <Points className="rounded-circle d-flex justify-content-center align-items-center font-weight-bold text-secondary">
-          10
+          {points}
         </Points>
       </Info>
     </PlayerElement>
